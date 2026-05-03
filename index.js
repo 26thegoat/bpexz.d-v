@@ -1,0 +1,16 @@
+{
+  "name": "bpexz-dev-bot",
+  "version": "1.0.0",
+  "description": "Bpexz.dev Discord bot — /redeem, /gen, /whitelist + role sync",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "register": "node src/register-commands.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.5",
+    "node-fetch": "^3.3.2"
+  }
+}

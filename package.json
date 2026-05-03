@@ -1,0 +1,45 @@
+# Bpexz.dev Discord Bot
+
+Slash commands: `/redeem`, `/status`, `/gen`, `/whitelist`. Auto-syncs roles every 15 min and assigns plan roles to new members.
+
+## Setup
+
+1. **Create a Discord application + bot** at https://discord.com/developers/applications
+   - Save Client ID, Client Secret, Bot Token
+   - Under "Bot" → enable **Server Members Intent**
+   - Under "OAuth2 → URL Generator" → scopes `bot` + `applications.commands`, permissions `Manage Roles` + `Send Messages` → invite the bot to your server
+
+2. **Get your IDs**
+   - Server (Guild) ID: enable Developer Mode in Discord, right-click your server → Copy ID
+   - Role IDs for each tier: right-click a role → Copy ID. Then in your bpexz.dev admin (or via the Cloud DB), set `plans.discord_role_id` for each plan.
+
+3. **Configure**
+```bash
+cp .env.example .env
+# fill in DISCORD_BOT_TOKEN, DISCORD_CLIENT_ID, DISCORD_GUILD_ID, BOT_API_SECRET
+npm install
+npm run register   # registers slash commands once (re-run when changed)
+npm start
+```
+
+## Required secrets on bpexz.dev (Lovable Cloud)
+
+The site needs these environment variables added in Lovable Cloud → Backend → Edge Functions → Secrets:
+
+- `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET` — for site login
+- `DISCORD_BOT_TOKEN`, `DISCORD_GUILD_ID` — so the site can auto-add users to the server on login
+- `BOT_API_SECRET` — same value as in this bot's `.env` (a long random string you choose)
+- `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_MODE` (`sandbox` or `live`)
+
+## PayPal webhook
+
+In PayPal Developer dashboard → My Apps → your app → Add Webhook:
+
+- URL: `https://kgxebsnmlmipjgmfghym.supabase.co/functions/v1/paypal-webhook`
+- Events: `PAYMENT.CAPTURE.COMPLETED`
+
+## Deploy options
+
+- **Railway**: New project → Deploy from repo → set env vars → done
+- **Fly.io**: `fly launch` in this folder
+- **VPS**: `pm2 start src/index.js --name bpexz-dev-bot`
